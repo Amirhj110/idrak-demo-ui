@@ -1,0 +1,6 @@
+{
+  "name": "Idrak-Demo",
+  "description": "Sovereign Enterprise AI & Voice Agent Platform with modern PayPeople workspace UI, multi-agent fleet, Arabic bilingual voice studio, knowledge base RAG, and compliance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
