@@ -260,6 +260,9 @@ export default function App() {
       <VoiceCallModal
         isOpen={isVoiceCallOpen}
         onClose={() => setIsVoiceCallOpen(false)}
+        agents={agents}
+        selectedAgentId={selectedAgent.id}
+        onNavigate={handleNavigate}
       />
 
       <CreateAgentModal

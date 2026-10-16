@@ -120,7 +120,7 @@ export const SpendTrackerView: React.FC = () => {
                 <span className="font-mono font-bold text-slate-900">22,410 mins</span>
               </div>
               <div className="home-record-row p-2.5 flex items-center justify-between">
-                <span className="text-slate-600">Inbound HR Helpline (Najla)</span>
+                <span className="text-slate-600">Inbound Agent Support (Najla)</span>
                 <span className="font-mono font-bold text-slate-900">11,710 mins</span>
               </div>
             </div>
@@ -192,9 +192,9 @@ export const SpendTrackerView: React.FC = () => {
           <div className="space-y-2.5">
             {[
               { dept: 'Customer Support Fleet (Bilytica)', amount: '$142.20', share: '57%', color: 'bg-rose-500' },
-              { dept: 'HR & People Operations', amount: '$64.80', share: '26%', color: 'bg-violet-500' },
-              { dept: 'Supply Chain & ERP SQL', amount: '$28.40', share: '12%', color: 'bg-sky-500' },
-              { dept: 'R&D / Test Sandbox', amount: '$13.10', share: '5%', color: 'bg-emerald-500' },
+              { dept: 'Knowledge & Retrieval', amount: '$64.80', share: '26%', color: 'bg-violet-500' },
+              { dept: 'DataBot & Analytics', amount: '$28.40', share: '12%', color: 'bg-sky-500' },
+              { dept: 'Evaluation Sandbox', amount: '$13.10', share: '5%', color: 'bg-emerald-500' },
             ].map((c, i) => (
               <div key={i} className="home-record-row p-3 flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2.5 min-w-0">

@@ -82,6 +82,55 @@
   align-items: stretch;
 }
 
+.home-overview-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+.home-overview-fixed {
+  height: 300px;
+  min-height: 300px;
+  overflow: hidden;
+}
+.home-overview-top > [data-home-widget="workspace-overview"] {
+  height: 320px;
+  min-height: 320px;
+}
+.home-overview-sections > .home-widget {
+  height: 420px;
+  min-height: 420px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.home-overview-sections > .home-widget.home-widget-wide {
+  height: 460px;
+  min-height: 460px;
+}
+.home-overview-sections > [data-home-widget="workday"] {
+  height: 280px;
+  min-height: 280px;
+}
+.home-overview-sections > .home-widget > section,
+.home-overview-sections > .home-widget > .home-goals {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.home-overview-sections > .home-widget > :not(.home-widget-heading) {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 900px) {
+  .home-overview-top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .home-overview-top > [data-home-widget="workspace-overview"] {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (min-width: 900px) {
   .home-widget-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -172,6 +221,18 @@
 
 .ask-studio-layout {
   grid-template-columns: minmax(0, 1fr);
+}
+.ask-studio-modal {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  max-width: none;
+  margin: 0;
+  padding: 14px;
+}
+.ask-studio-modal > .ask-studio-layout {
+  min-height: 0;
 }
 @media (min-width: 800px) {
   .ask-studio-layout {

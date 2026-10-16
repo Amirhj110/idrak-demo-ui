@@ -29,7 +29,7 @@ export const IntegrationsView: React.FC = () => {
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Connect Idrak agents to enterprise systems including PayPeople HRMS, MSSQL views, and telecommunication switches
+            Connect Idrak agents to knowledge sources, workspace data, and voice gateways
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export const IntegrationsView: React.FC = () => {
             <div className="home-record-row p-3.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Synchronized Records</span>
               <span className="font-display text-2xl font-bold text-slate-900 mt-1 block">42,890</span>
-              <span className="text-[10px] text-emerald-600 font-bold mt-1 block">PayPeople + MSSQL</span>
+              <span className="text-[10px] text-emerald-600 font-bold mt-1 block">Knowledge + workspace data</span>
             </div>
             <div className="home-record-row p-3.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Active Telephony Trunks</span>
@@ -87,7 +87,7 @@ export const IntegrationsView: React.FC = () => {
         </div>
 
         {/* ================================================================= */}
-        {/* CARD 2: Human Capital & PayPeople HRMS (Tone: Mint) */}
+        {/* CARD 2: Knowledge & Workspace Data (Tone: Mint) */}
         {/* ================================================================= */}
         <div data-home-widget="hrms-connectors" data-tone="mint" className="home-widget">
           <div className="home-widget-heading flex items-center justify-between gap-3 mb-4">
@@ -96,8 +96,8 @@ export const IntegrationsView: React.FC = () => {
                 <CheckCircle2 className="size-5" />
               </span>
               <div>
-                <h2 className="text-base font-bold text-slate-900 font-display">PayPeople HRMS & Workforce</h2>
-                <p className="text-xs text-slate-500">Employee directory and leave quotas</p>
+                <h2 className="text-base font-bold text-slate-900 font-display">Knowledge & Workspace Data</h2>
+                <p className="text-xs text-slate-500">Indexed sources and read-only workspace views</p>
               </div>
             </div>
             <span className="rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5">
@@ -108,11 +108,11 @@ export const IntegrationsView: React.FC = () => {
           <div className="space-y-3">
             <div className="home-record-row p-3.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-xs">PayPeople HRMS Core Connector</span>
+                <span className="font-bold text-slate-900 text-xs">Idrak Knowledge Source Connector</span>
                 <span className="text-[9px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Active</span>
               </div>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Synchronizes employee directory, annual leave quotas, and biometric clock-in logs with Idrak HR agents.
+                Indexes approved workspace documentation and connects read-only data views to Idrak agents.
               </p>
               <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
                 <span className="text-slate-400">Sync: Every 5 minutes</span>
@@ -125,8 +125,8 @@ export const IntegrationsView: React.FC = () => {
 
             <div className="home-record-row p-3 flex items-center justify-between text-xs">
               <div>
-                <span className="font-bold text-slate-800">Biometric Clock-in Sync</span>
-                <p className="text-[10px] text-slate-400">Riyadh & Jeddah turnstiles</p>
+                <span className="font-bold text-slate-800">Knowledge Index Sync</span>
+                <p className="text-[10px] text-slate-400">5 collections · Riyadh region</p>
               </div>
               <span className="font-mono font-bold text-emerald-600 text-[11px]">100% Up to date</span>
             </div>

@@ -44,10 +44,10 @@ export const SystemLogsView: React.FC = () => {
       id: 'l2', 
       time: '14:41:04 AST', 
       level: 'INFO', 
-      service: 'databot-mssql', 
-      msg: 'Query executed against dbo.vw_PayPeople_EmployeeLeaveBalances. Rows: 420. Latency: 28ms.', 
+      service: 'databot-mssql',
+      msg: 'Read-only query executed against dbo.vw_AgentUsageDaily. Rows: 420. Latency: 28ms.',
       code: 200,
-      details: 'SQL Plan: Clustered Index Seek on EmployeeId · Zero table scans · Encryption: AlwaysEncrypted'
+      details: 'SQL Plan: Indexed lookup on AgentId · Read-only workspace view · Encryption: AlwaysEncrypted'
     },
     { 
       id: 'l3', 
@@ -63,9 +63,9 @@ export const SystemLogsView: React.FC = () => {
       time: '14:35:10 AST', 
       level: 'INFO', 
       service: 'rag-embedder', 
-      msg: 'Vector similarity cache hit on collection kb-hr (cosine score: 0.984).', 
+      msg: 'Vector similarity cache hit on collection kb-platform (cosine score: 0.984).',
       code: 200,
-      details: 'Query vector matched Riyadh Retail QA Chunk #42 · Embedding model: idrak-embed-v2-sovereign'
+      details: 'Query vector matched an Idrak agent deployment guide chunk · Embedding model: idrak-embed-v2-sovereign'
     },
     { 
       id: 'l5', 

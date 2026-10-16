@@ -27,7 +27,9 @@ import {
   ScrollText,
   Globe,
   RefreshCw,
-  Radio
+  Radio,
+  CheckCircle2,
+  Layers,
 } from 'lucide-react';
 import { AgentItem, KBCollection, RoutePath } from '../../types';
 
@@ -104,6 +106,8 @@ export const HomeOverviewTab: React.FC<HomeOverviewTabProps> = ({
 
   // State for new analytics, api pinging, and log filtering
   const [analyticsTimeframe, setAnalyticsTimeframe] = useState<'24H' | '7D' | '30D'>('7D');
+  const [dashboardTimeframe, setDashboardTimeframe] = useState<'24H' | '7D' | '30D'>('24H');
+  const [dashboardRefreshing, setDashboardRefreshing] = useState(false);
   const [isPinging, setIsPinging] = useState<boolean>(false);
   const [pingSuccess, setPingSuccess] = useState<boolean>(false);
   const [homeLogFilter, setHomeLogFilter] = useState<'ALL' | 'INFO' | 'WARN'>('ALL');
@@ -117,6 +121,11 @@ export const HomeOverviewTab: React.FC<HomeOverviewTabProps> = ({
     }, 600);
   };
 
+  const handleDashboardRefresh = () => {
+    setDashboardRefreshing(true);
+    window.setTimeout(() => setDashboardRefreshing(false), 700);
+  };
+
   const handleApprove = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setApprovedIds(prev => [...prev, id]);
@@ -124,8 +133,128 @@ export const HomeOverviewTab: React.FC<HomeOverviewTabProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 11 Clean Reference Widgets arranged in .home-widget-grid */}
-      <div className="home-widget-grid">
+      <div className="home-overview-top">
+        <section data-home-widget="workspace-overview" data-tone="violet" className="home-widget home-overview-fixed home-widget-wide">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="home-widget-icon"><Activity className="size-5" /></span>
+                <div>
+                  <h2 className="mb-0 font-display text-base font-bold text-slate-900">Workspace overview</h2>
+                  <p className="mb-0 mt-0.5 text-[11px] text-slate-500">Daily activity this month compared with the previous month</p>
+                </div>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700"><span className="size-1.5 rounded-full bg-emerald-500" /> Live</span>
+          </div>
+          <div className="mt-4 grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.6fr)]">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-2">
+              {[
+                { title: 'Requests', value: '0', detail: 'Across your workspace', tone: 'text-violet-700 bg-violet-50' },
+                { title: 'Tokens', value: '0', detail: 'This month', tone: 'text-sky-700 bg-sky-50' },
+                { title: 'Errors', value: '0', detail: 'No failed requests', tone: 'text-amber-700 bg-amber-50' },
+                { title: 'Success', value: '100.0%', detail: 'All requests successful', tone: 'text-emerald-700 bg-emerald-50' },
+              ].map((metric) => (
+                <div key={metric.title} className="flex min-h-[66px] items-center justify-between gap-2 rounded-xl border border-slate-100 bg-white/80 px-3 py-2">
+                  <div>
+                    <p className="mb-0 text-[9px] font-bold uppercase tracking-wide text-slate-400">{metric.title}</p>
+                    <p className="mb-0 mt-0.5 font-display text-lg font-bold leading-none text-slate-900">{metric.value}</p>
+                  </div>
+                  <span className={`grid size-7 shrink-0 place-items-center rounded-lg text-[9px] font-bold ${metric.tone}`}>{metric.title === 'Success' ? <CheckCircle2 className="size-3.5" /> : metric.title === 'Errors' ? '0' : <Activity className="size-3.5" />}</span>
+                </div>
+              ))}
+            </div>
+            <div className="min-h-[152px] rounded-2xl border border-slate-100 bg-white/75 p-3">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <p className="mb-0 text-[10px] font-bold text-slate-700">Workspace activity · daily</p>
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-[8px] text-slate-500">
+                  <span className="inline-flex items-center gap-1"><i className="size-2 rounded-full bg-violet-500" /> Requests · This month</span>
+                  <span className="inline-flex items-center gap-1"><i className="size-2 rounded-full bg-violet-200" /> Requests · Last month</span>
+                  <span className="inline-flex items-center gap-1"><i className="size-2 rounded-full bg-sky-500" /> Tokens · This month</span>
+                  <span className="inline-flex items-center gap-1"><i className="size-2 rounded-full bg-sky-200" /> Tokens · Last month</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 600 100" className="h-[88px] w-full" role="img" aria-label="Daily requests and token use are currently zero this month and last month">
+                {[20, 45, 70, 95].map(y => <path key={y} d={`M20 ${y} H590`} stroke="#e9edf5" strokeDasharray="3 5" />)}
+                <path d="M20 94 H590" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M20 91 H590" stroke="#c4b5fd" strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" />
+                <path d="M20 97 H590" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" />
+                <path d="M20 88 H590" stroke="#bae6fd" strokeWidth="2" strokeDasharray="5 5" strokeLinecap="round" />
+                <text x="20" y="10" fill="#94a3b8" fontSize="9">Daily events</text>
+                <text x="550" y="10" fill="#94a3b8" fontSize="9">Today</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section data-home-widget="workspace-dashboard" data-tone="cyan" className="home-widget home-overview-fixed">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="home-widget-icon"><BarChart3 className="size-5" /></span>
+              <div>
+                <h2 className="mb-0 font-display text-base font-bold text-slate-900">Dashboard</h2>
+                <p className="mb-0 mt-0.5 text-[10px] text-slate-500">Real calls, requests, and tokens from your workspace logs</p>
+              </div>
+            </div>
+            <button onClick={handleDashboardRefresh} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[9px] font-semibold text-slate-600 hover:border-violet-200 hover:text-violet-700">
+              <RefreshCw className={`size-3 ${dashboardRefreshing ? 'animate-spin' : ''}`} /> Refresh
+            </button>
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <div className="flex rounded-lg border border-slate-200 bg-white p-0.5">
+              {(['24H', '7D', '30D'] as const).map(period => <button key={period} onClick={() => setDashboardTimeframe(period)} className={`rounded-md px-2 py-1 text-[9px] font-bold ${dashboardTimeframe === period ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}>{period}</button>)}
+            </div>
+            <span className="text-[8px] text-slate-400">{dashboardTimeframe} · Workspace request log</span>
+          </div>
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {[
+              { name: 'Requests', value: '0', tone: 'text-violet-700' },
+              { name: 'Tokens', value: '0', tone: 'text-sky-700' },
+              { name: 'Errors', value: '0', tone: 'text-amber-700' },
+              { name: 'Avg latency', value: '—', tone: 'text-emerald-700' },
+            ].map(kpi => <div key={kpi.name} className="rounded-xl border border-slate-100 bg-white/80 px-2.5 py-2"><p className="mb-0 text-[8px] font-bold uppercase tracking-wide text-slate-400">{kpi.name}</p><p className={`mb-0 mt-1 font-display text-lg font-bold leading-none ${kpi.tone}`}>{kpi.value}</p></div>)}
+          </div>
+          <div className="mt-3 flex min-h-[48px] items-center gap-2 rounded-xl border border-dashed border-sky-200 bg-sky-50/50 px-3 py-2 text-[9px] leading-relaxed text-slate-500">
+            <Activity className="size-4 shrink-0 text-sky-600" />
+            <span>No endpoint traffic yet — deploy an agent and send a few requests.</span>
+          </div>
+        </section>
+
+        <section data-home-widget="workspace-statistics" data-tone="mint" className="home-widget home-overview-fixed">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="home-widget-icon"><Layers className="size-5" /></span>
+              <div>
+                <h2 className="mb-0 font-display text-base font-bold text-slate-900">Workspace Statistics</h2>
+                <p className="mb-0 mt-0.5 text-[10px] text-slate-500">24h summary across your Idrak workspace</p>
+              </div>
+            </div>
+            <div className="flex rounded-lg border border-slate-200 bg-white p-0.5">
+              {(['24H', '7D', '30D'] as const).map(period => <button key={period} onClick={() => setDashboardTimeframe(period)} className={`rounded-md px-2 py-1 text-[9px] font-bold ${dashboardTimeframe === period ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}>{period}</button>)}
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2.5 md:grid-cols-3 xl:grid-cols-5">
+            {[
+              { label: 'Agents', value: '8', detail: '8 live · 0 draft', icon: Bot, color: 'text-violet-700 bg-violet-50', badge: 'Orchestrator Ready' },
+              { label: 'Calls 24H', value: '0', detail: '24h · Requests', icon: PhoneCall, color: 'text-emerald-700 bg-emerald-50' },
+              { label: 'API Keys', value: '0 Active', detail: 'Rate: 10,000 req/m', icon: ShieldCheck, color: 'text-sky-700 bg-sky-50' },
+              { label: 'Avg Success', value: '100.00%', detail: '0 Errors', icon: CheckCircle2, color: 'text-teal-700 bg-teal-50' },
+              { label: 'Spend 24H', value: '0', detail: 'Tokens', icon: Zap, color: 'text-amber-700 bg-amber-50' },
+            ].map(stat => {
+              const Icon = stat.icon;
+              return <div key={stat.label} className="relative min-h-[114px] rounded-xl border border-slate-100 bg-white/85 p-3">
+                <div className="flex items-center justify-between gap-2"><span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">{stat.label}</span><span className={`grid size-7 place-items-center rounded-lg ${stat.color}`}><Icon className="size-3.5" /></span></div>
+                <p className="mb-0 mt-2 font-display text-xl font-bold leading-none text-slate-900">{stat.value}</p>
+                <p className="mb-0 mt-1.5 truncate text-[8px] text-slate-500">{stat.detail}</p>
+                {stat.badge && <span className="absolute bottom-2 right-2 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[7px] font-bold text-emerald-700">{stat.badge}</span>}
+              </div>;
+            })}
+          </div>
+        </section>
+      </div>
+
+      {/* Existing Idrak workspace overview cards */}
+      <div className="home-widget-grid home-overview-sections">
         
         {/* ================================================================= */}
         {/* WIDGET 1: IDRAK WORKSPACE HERO AND PRODUCTION TASKS */}
@@ -1167,7 +1296,7 @@ export const HomeOverviewTab: React.FC<HomeOverviewTabProps> = ({
               {[
                 { time: '14:42:18', level: 'INFO', svc: 'telephony-gw', msg: 'SIP trunk session initialized (Riyadh DC-1). 8kHz RTP established.' },
                 { time: '14:38:52', level: 'WARN', svc: 'guardrails-pii', msg: 'National ID masked per Saudi PDPL Art 14 before LLM dispatch.' },
-                { time: '14:35:10', level: 'INFO', svc: 'rag-embedder', msg: 'Vector similarity cache hit on collection kb-hr (score: 0.984).' },
+                { time: '14:35:10', level: 'INFO', svc: 'rag-embedder', msg: 'Vector similarity cache hit on collection kb-platform (score: 0.984).' },
                 { time: '14:30:00', level: 'INFO', svc: 'cluster-audit', msg: 'Zero cross-border egress confirmed. In-country sovereign execution.' },
               ]
                 .filter(l => homeLogFilter === 'ALL' || l.level === homeLogFilter)

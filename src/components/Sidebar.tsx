@@ -1,5 +1,5 @@
 import React from 'react';
-import { 
+import {
   LayoutDashboard, 
   Bot, 
   Users, 
@@ -18,7 +18,6 @@ import {
   Key, 
   ShieldCheck, 
   ChevronLeft, 
-  PhoneCall, 
   LogOut,
   Sparkles
 } from 'lucide-react';
@@ -105,20 +104,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Quick Action Test Call */}
+      {/* Quick Action Agent Playground */}
       <div className={`p-2.5 pb-1 ${collapsed ? 'px-2' : 'px-3'}`}>
         <button
           onClick={onOpenVoiceCall}
           className={`group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xs shadow-violet-200 hover:from-violet-700 hover:to-indigo-700 transition-all text-xs font-semibold active:scale-[0.98] ${
             collapsed ? 'size-9 p-0 mx-auto' : 'w-full py-2 px-3'
           }`}
-          title="Launch Live Telephony Simulation"
+          title="Open the Idrak agent playground"
         >
-          <PhoneCall className="size-3.5 shrink-0 animate-pulse text-violet-200" />
+          <Sparkles className="size-3.5 shrink-0 text-violet-200" />
           {!collapsed && (
             <div className="flex items-center justify-between w-full">
-              <span>Voice Simulator</span>
-              <span className="rounded bg-white/20 px-1 py-0.2 text-[9px] text-white font-mono">WebRTC</span>
+              <span>Agent Playground</span>
+              <span className="rounded bg-white/20 px-1 py-0.2 text-[9px] text-white font-mono">CHAT · VOICE</span>
             </div>
           )}
         </button>

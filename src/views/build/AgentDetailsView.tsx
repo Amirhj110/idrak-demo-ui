@@ -89,12 +89,12 @@ export const AgentDetailsView: React.FC<AgentDetailsViewProps> = ({
     setTestInput('');
 
     setTimeout(() => {
-      let reply = `Agent executed prompt with temperature ${temperature}. Grounded in: ${agent.knowledgeBaseName || 'Base System'}.`;
-      if (userMsg.includes('leave') || userMsg.includes('إجازة')) {
-        reply = 'بيانات نظام PayPeople: رصيد إجازتك السنوية المتاح 18.5 يوم. يمكنك رفع طلب مباشرة.';
-      } else if (userMsg.includes('balance') || userMsg.includes('رصيد')) {
-        reply = 'رصيدك المتاح في البطاقة البلاتينية هو 14,250 ريال سعودي. تاريخ الاستحقاق 25 أكتوبر.';
-      }
+      const query = userMsg.toLowerCase();
+      const reply = query.includes('knowledge') || query.includes('source')
+        ? `This agent is connected to ${agent.knowledgeBaseName || 'the Idrak demo knowledge base'}. Configure its assigned collections in the Knowledge tab.`
+        : query.includes('voice') || query.includes('لغة')
+          ? `This ${agent.type.toLowerCase()} agent is configured for ${language}. Its model is ${model}.`
+          : `Agent executed the sample prompt with temperature ${temperature}. Grounded in: ${agent.knowledgeBaseName || 'Base System'}.`;
       setTestMessages(prev => [
         ...prev, 
         { sender: 'agent', text: reply, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }

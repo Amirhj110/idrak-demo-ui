@@ -15,12 +15,16 @@ import {
   ShieldCheck,
   Sparkles,
   SquarePen,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { AgentItem, RoutePath } from '../../types';
 
 interface AskAgentPlaygroundViewProps {
   agents: AgentItem[];
   onNavigate: (route: RoutePath) => void;
+  initialAgentId?: string;
+  isModal?: boolean;
 }
 
 interface ChatMessage {
@@ -45,12 +49,18 @@ const suggestions = [
   'How do I keep answers grounded?',
 ];
 
-export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ agents, onNavigate }) => {
-  const firstAgent = agents[0];
+export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({
+  agents,
+  onNavigate,
+  initialAgentId,
+  isModal = false,
+}) => {
+  const firstAgent = agents.find((agent) => agent.id === initialAgentId) || agents[0];
   const [selectedAgentId, setSelectedAgentId] = useState(firstAgent?.id || '');
   const [inputText, setInputText] = useState('');
   const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>(() => [
     {
       id: 'sess-1',
@@ -106,6 +116,7 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
     agents.find((agent) => agent.id === selectedAgentId) ||
     agents.find((agent) => agent.id === currentSession?.agentId) ||
     firstAgent;
+  const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   useEffect(() => {
     if (!currentSession) return;
@@ -118,6 +129,12 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
       behavior: 'smooth',
     });
   }, [currentSession?.messages.length, isTyping]);
+
+  useEffect(() => () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, []);
 
   const handleCreateNewChat = () => {
     if (!currentAgent) return;
@@ -174,9 +191,7 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
 
     window.setTimeout(() => {
       const query = userText.toLowerCase();
-      const agentReply = query.includes('leave') || query.includes('إجاز')
-        ? 'Your connected sample workspace includes HR and leave-policy information. In a live deployment, I would answer from the relevant indexed source and provide a citation so you can verify the policy.'
-        : query.includes('voice') || query.includes('dialect')
+      const agentReply = query.includes('voice') || query.includes('dialect')
           ? 'Idrak supports multilingual voice experiences, including Arabic dialects and English. You can configure the voice, language, and agent behavior in Voice Studio.'
           : query.includes('source') || query.includes('knowledge')
             ? `This agent is connected to ${currentAgent.knowledgeBaseName || 'the sample Idrak knowledge base'}. A production answer can cite the specific document and passage used for grounding.`
@@ -210,12 +225,33 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
   };
 
   const handleAgentChange = (agentId: string) => {
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
     setSelectedAgentId(agentId);
     setSessions((previous) =>
       previous.map((session) =>
         session.id === activeSessionId ? { ...session, agentId } : session,
       ),
     );
+  };
+
+  const handleVoicePreview = () => {
+    if (!canSpeak || !currentAgent || !currentSession) return;
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const latestAgentMessage = [...currentSession.messages].reverse().find((message) => message.sender === 'agent');
+    if (!latestAgentMessage) return;
+    const utterance = new SpeechSynthesisUtterance(latestAgentMessage.text);
+    utterance.lang = /arabic|عربي/i.test(currentAgent.language) ? 'ar-SA' : 'en-US';
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onstart = () => setIsSpeaking(true);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   };
 
   if (!currentAgent || !currentSession) {
@@ -229,7 +265,7 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
   }
 
   return (
-    <section className="ask-studio mx-auto flex min-h-[620px] h-[calc(100vh-124px)] max-h-[920px] max-w-[1500px] flex-col gap-4">
+    <section className={`ask-studio mx-auto flex min-h-[620px] h-[calc(100vh-124px)] max-h-[920px] max-w-[1500px] flex-col gap-4 ${isModal ? 'ask-studio-modal' : ''}`}>
       <div className="relative flex shrink-0 flex-wrap items-center justify-between gap-4 overflow-hidden rounded-[20px] border border-violet-100/80 bg-gradient-to-r from-violet-50/90 via-white to-sky-50/90 px-4 py-3.5 shadow-[0_8px_28px_-24px_rgba(109,40,217,0.35)] sm:px-5">
         <span aria-hidden="true" className="pointer-events-none absolute -right-8 -top-16 size-40 rounded-full bg-violet-200/25 blur-3xl" />
         <div className="relative flex min-w-0 items-center gap-3">
@@ -338,6 +374,18 @@ export const AskAgentPlaygroundView: React.FC<AskAgentPlaygroundViewProps> = ({ 
               >
                 <SquarePen className="size-3" /><span className="hidden sm:inline">Agent details</span>
               </button>
+              {currentAgent.type !== 'Chat' && (
+                <button
+                  type="button"
+                  onClick={handleVoicePreview}
+                  disabled={!canSpeak}
+                  title={canSpeak ? 'Play a voice preview of the latest agent response' : 'Speech playback is not available in this browser'}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-violet-100 bg-violet-50/70 px-2.5 text-[9px] font-semibold text-violet-700 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isSpeaking ? <VolumeX className="size-3" /> : <Volume2 className="size-3" />}
+                  <span className="hidden sm:inline">{isSpeaking ? 'Stop voice' : currentAgent.type === 'Hybrid' ? 'Voice preview' : 'Play voice'}</span>
+                </button>
+              )}
               <button aria-label="More chat options" className="grid size-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-50">
                 <MoreHorizontal className="size-4" />
               </button>

@@ -34,8 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
   const notifications = [
     {
       id: 'n1',
-      title: 'MSSQL View Synchronized',
-      desc: 'vw_PayPeople_EmployeeLeaveBalances indexed with 420 employee records.',
+      title: 'Workspace usage view synchronized',
+      desc: 'vw_AgentUsageDaily refreshed with the latest agent and request summaries.',
       time: '6m ago',
       route: '/app/databot' as RoutePath
     },
